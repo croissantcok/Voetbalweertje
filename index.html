@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0C479D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Voetbalweer">
 <title>Voetbalweer Berkel en Rodenrijs</title>
@@ -13,45 +12,29 @@
 <style>
     /*
         KLEUREN
-        iOS-systeemkleuren volgens de Apple Human Interface Guidelines,
-        met aparte waarden voor light en dark mode.
+        Geel en blauw, overgenomen van de clubkleuren van C.V.V. Berkel.
     */
     :root {
-        --bg: #F2F2F7;
-        --card: #FFFFFF;
-        --card-raised: #F2F2F7;
-        --label: #000000;
-        --label-2: rgba(60, 60, 67, 0.6);
-        --label-3: rgba(60, 60, 67, 0.3);
-        --separator: rgba(60, 60, 67, 0.18);
-        --fill: rgba(120, 120, 128, 0.12);
+        --geel: #FFFF01;
+        --geel-zacht: #FFF9B0;
+        --blauw: #0C479D;
+        --blauw-donker: #051C3E;
+        --wit: #FFFFFF;
 
-        --green: #34C759;
-        --orange: #FF9500;
-        --red: #FF3B30;
-        --blue: #007AFF;
-        --teal: #30B0C7;
+        --label: #051C3E;
+        --label-2: rgba(5, 28, 62, 0.62);
+        --separator: rgba(5, 28, 62, 0.14);
+        --fill: rgba(12, 71, 157, 0.10);
 
-        --radius: 22px;
-    }
+        --green: #1E9E4A;
+        --orange: #E07B00;
+        --red: #D3261E;
+        --teal: #0C7FB0;
 
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --bg: #000000;
-            --card: #1C1C1E;
-            --card-raised: #2C2C2E;
-            --label: #FFFFFF;
-            --label-2: rgba(235, 235, 245, 0.6);
-            --label-3: rgba(235, 235, 245, 0.3);
-            --separator: rgba(84, 84, 88, 0.6);
-            --fill: rgba(120, 120, 128, 0.24);
+        --radius: 6px;
 
-            --green: #30D158;
-            --orange: #FF9F0A;
-            --red: #FF453A;
-            --blue: #0A84FF;
-            --teal: #40C8E0;
-        }
+        /* Ruitpatroon uit het clubwapen */
+        --ruiten: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='56' viewBox='0 0 40 56'%3E%3Cpath d='M20 0 40 28 20 56 0 28Z' fill='%230C479D'/%3E%3C/svg%3E");
     }
 
     * {
@@ -60,46 +43,88 @@
 
     body {
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        background: var(--bg);
+        font-family: Verdana, Geneva, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--geel);
         color: var(--label);
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;
         font-variant-numeric: tabular-nums;
     }
 
-    .container {
-        max-width: 980px;
-        margin: auto;
-        padding: max(20px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom));
+    h1, h2, .kop, .tegel .value, .hour .temp, .ring strong {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     /*
-        NAVIGATIEBALK MET GROTE TITEL
+        HEADER MET CLUBFOTO
+        Schuine gele strook met ruiten links, foto met blauwe gloed rechts.
     */
-    header {
+    .hero {
+        position: relative;
+        min-height: 300px;
+        background:
+            linear-gradient(90deg, rgba(12, 71, 157, 0.95) 0%, rgba(12, 71, 157, 0.55) 55%, rgba(12, 71, 157, 0.15) 100%),
+            url("https://www.cvvberkel.nl/wp-content/uploads/cvvberkel/2019/09/CVV-Berkel-clubgebouw-1-e1569427239964.jpg") center 60% / cover,
+            var(--blauw);
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 150px;
+        background: var(--ruiten) var(--geel);
+        background-size: 28px 39px;
+        clip-path: polygon(0 0, 100% 0, 62% 100%, 0 100%);
+    }
+
+    .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 172px;
+        background: var(--wit);
+        clip-path: polygon(87.2% 0, 100% 0, 66.3% 100%, 53.9% 100%);
+    }
+
+    .hero-inhoud {
+        position: relative;
+        z-index: 1;
+        max-width: 980px;
+        margin: auto;
+        padding: max(22px, env(safe-area-inset-top)) 16px 72px 150px;
         display: flex;
         justify-content: space-between;
-        align-items: flex-end;
+        align-items: flex-start;
         gap: 16px;
-        padding: 12px 4px 20px;
+        color: var(--wit);
     }
 
     .eyebrow {
-        color: var(--label-2);
-        font-size: 15px;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.02em;
+        opacity: 0.9;
     }
 
     h1 {
-        margin: 2px 0 0;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: 34px;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
+        margin: 6px 0 0;
+        color: var(--geel);
+        font-size: 50px;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
+        line-height: 0.95;
+        letter-spacing: -0.01em;
+        text-shadow: 0 2px 12px rgba(5, 28, 62, 0.35);
+    }
+
+    .hero .sub {
+        margin-top: 10px;
+        font-size: 14px;
+        opacity: 0.92;
     }
 
     .vernieuw {
@@ -108,19 +133,20 @@
         align-items: center;
         gap: 6px;
         border: none;
-        background: var(--fill);
-        color: var(--blue);
+        background: var(--geel);
+        color: var(--blauw-donker);
         font: inherit;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 8px 14px;
-        border-radius: 999px;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 9px 14px;
+        border-radius: 2px;
         cursor: pointer;
-        transition: opacity 0.2s;
+        box-shadow: 0 2px 8px rgba(5, 28, 62, 0.25);
+        transition: transform 0.15s;
     }
 
     .vernieuw:active {
-        opacity: 0.5;
+        transform: scale(0.96);
     }
 
     .vernieuw svg {
@@ -136,21 +162,31 @@
         to { transform: rotate(360deg); }
     }
 
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 980px;
+        margin: -48px auto 0;
+        padding: 0 16px max(32px, env(safe-area-inset-bottom));
+    }
+
     /*
-        GROEPEN EN KAARTEN
+        BLAUWE KOPBALKEN (zoals "Nieuws" op de clubsite)
     */
     .group-title {
-        margin: 28px 4px 8px;
-        color: var(--label-2);
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
+        margin: 26px 0 10px;
+        padding: 9px 12px;
+        background: var(--blauw);
+        color: var(--wit);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 17px;
+        font-weight: bold;
     }
 
     .card {
-        background: var(--card);
+        background: var(--wit);
         border-radius: var(--radius);
+        box-shadow: 0 1px 3px rgba(5, 28, 62, 0.12);
     }
 
     /*
@@ -161,6 +197,8 @@
         align-items: center;
         gap: 22px;
         padding: 22px;
+        border-top: 5px solid var(--blauw);
+        box-shadow: 0 10px 30px rgba(5, 28, 62, 0.2);
     }
 
     .ring {
@@ -181,7 +219,7 @@
     }
 
     .ring .voortgang {
-        stroke: var(--label-3);
+        stroke: var(--blauw);
         stroke-linecap: round;
         transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.3s;
     }
@@ -196,46 +234,52 @@
     }
 
     .ring .getal strong {
-        font-size: 32px;
-        font-weight: 700;
+        font-size: 34px;
+        font-weight: 800;
         line-height: 1;
     }
 
     .ring .getal span {
         color: var(--label-2);
-        font-size: 12px;
+        font-size: 11px;
         margin-top: 3px;
     }
 
     .badge {
         display: inline-block;
-        font-size: 13px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 999px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 4px 9px;
+        border-radius: 2px;
         background: var(--fill);
-        color: var(--label-2);
+        color: var(--blauw);
     }
 
     .goed .voortgang { stroke: var(--green); }
     .matig .voortgang { stroke: var(--orange); }
     .slecht .voortgang { stroke: var(--red); }
 
-    .goed .badge { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); }
-    .matig .badge { background: color-mix(in srgb, var(--orange) 18%, transparent); color: var(--orange); }
-    .slecht .badge { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--red); }
+    .goed .badge { background: var(--green); color: var(--wit); }
+    .matig .badge { background: var(--orange); color: var(--wit); }
+    .slecht .badge { background: var(--red); color: var(--wit); }
 
     .advies h2 {
         margin: 8px 0 4px;
-        font-size: 22px;
-        font-weight: 700;
+        color: var(--blauw);
+        font-size: 26px;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
+        line-height: 1.05;
     }
 
     .advies p {
         margin: 0;
         color: var(--label-2);
-        font-size: 15px;
-        line-height: 1.4;
+        font-size: 14px;
+        line-height: 1.5;
     }
 
     /*
@@ -244,11 +288,12 @@
     .cards {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
+        gap: 10px;
     }
 
     .tegel {
         padding: 14px 16px 16px;
+        border-left: 4px solid var(--blauw);
     }
 
     .tegel .label {
@@ -256,23 +301,23 @@
         align-items: center;
         gap: 6px;
         color: var(--label-2);
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: bold;
         text-transform: uppercase;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.05em;
     }
 
     .tegel .value {
-        margin-top: 10px;
+        margin-top: 8px;
+        color: var(--blauw-donker);
         font-size: 28px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
+        font-weight: 800;
     }
 
     .tegel .value small {
         color: var(--label-2);
-        font-size: 17px;
-        font-weight: 500;
+        font-size: 15px;
+        font-weight: 600;
         margin-left: 2px;
     }
 
@@ -290,9 +335,9 @@
         gap: 12px;
         padding-bottom: 12px;
         margin: 0 16px;
-        border-bottom: 0.5px solid var(--separator);
+        border-bottom: 1px solid var(--separator);
         color: var(--label-2);
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .legenda {
@@ -303,10 +348,11 @@
 
     .legenda::before {
         content: "";
-        width: 10px;
-        height: 10px;
-        border-radius: 3px;
-        background: color-mix(in srgb, var(--green) 30%, transparent);
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        background: var(--geel);
+        border: 1px solid rgba(5, 28, 62, 0.2);
     }
 
     .hours {
@@ -331,22 +377,29 @@
         align-items: center;
         gap: 8px;
         padding: 10px 6px;
-        border-radius: 14px;
-        font-size: 15px;
+        border-radius: 4px;
+        font-size: 14px;
     }
 
     .hour.speeltijd {
-        background: color-mix(in srgb, var(--green) 14%, transparent);
+        background: var(--geel);
+    }
+
+    .hour.nu {
+        background: var(--blauw);
+        color: var(--wit);
     }
 
     .hour .tijd {
         color: var(--label-2);
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 12px;
+        font-weight: bold;
     }
 
-    .hour.nu .tijd {
-        color: var(--label);
+    .hour.nu .tijd,
+    .hour.nu .klein,
+    .hour.nu .rain {
+        color: var(--wit);
     }
 
     .hour .icoon {
@@ -356,18 +409,18 @@
 
     .hour .temp {
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 800;
     }
 
     .hour .rain {
         color: var(--teal);
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 12px;
+        font-weight: bold;
     }
 
     .hour .klein {
         color: var(--label-2);
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .laden {
@@ -381,17 +434,24 @@
     #status {
         margin-top: 22px;
         text-align: center;
-        color: var(--label-2);
+        color: var(--blauw-donker);
         font-size: 12px;
+    }
+
+    .voetnoot {
+        margin-top: 8px;
+        text-align: center;
+        color: var(--label-2);
+        font-size: 11px;
     }
 
     .error {
         display: inline-block;
-        background: color-mix(in srgb, var(--red) 15%, transparent);
-        color: var(--red);
+        background: var(--red);
+        color: var(--wit);
         padding: 12px 16px;
-        border-radius: 14px;
-        font-size: 14px;
+        border-radius: 4px;
+        font-size: 13px;
     }
 
     @media (max-width: 720px) {
@@ -401,8 +461,25 @@
     }
 
     @media (max-width: 480px) {
+        .hero {
+            min-height: 260px;
+        }
+
+        .hero::before {
+            width: 64px;
+        }
+
+        .hero::after {
+            width: 74px;
+        }
+
+        .hero-inhoud {
+            padding-left: 84px;
+            flex-direction: column;
+        }
+
         h1 {
-            font-size: 30px;
+            font-size: 34px;
         }
 
         .advies {
@@ -420,23 +497,26 @@
 
 <body>
 
-<div class="container">
+<header class="hero">
+    <div class="hero-inhoud">
+        <div>
+            <div class="eyebrow">Sportpark C.V.V. Berkel</div>
+            <h1>Voetbal&shy;weer</h1>
+            <div class="sub">Berkel en Rodenrijs • weercheck voor vanavond</div>
+        </div>
 
-<header>
-    <div>
-        <div class="eyebrow">Berkel en Rodenrijs</div>
-        <h1>⚽ Voetbalweer</h1>
+        <button id="vernieuwKnop" class="vernieuw" onclick="haalWeerOp()" aria-label="Weer vernieuwen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                <path d="M21 3v6h-6"/>
+            </svg>
+            Vernieuw
+        </button>
     </div>
-
-    <button id="vernieuwKnop" class="vernieuw" onclick="haalWeerOp()" aria-label="Weer vernieuwen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
-            <path d="M21 3v6h-6"/>
-        </svg>
-        Vernieuw
-    </button>
 </header>
 
+
+<div class="container">
 
 <div id="advies" class="card advies">
 
@@ -532,6 +612,10 @@
 
 <div id="status">
     Verbinding maken met weer-API...
+</div>
+
+<div class="voetnoot">
+    Geen officiële pagina van C.V.V. Berkel • foto: cvvberkel.nl
 </div>
 
 </div>
