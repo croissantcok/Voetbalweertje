@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voetbalweer Berkel en Rodenrijs</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #081c15, #1b4332);
+        color: white;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: auto;
+        padding: 35px 20px;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 34px;
+    }
+
+    .subtitle {
+        color: #b7d7c5;
+        margin-top: 7px;
+    }
+
+    button {
+        border: none;
+        background: #52b788;
+        color: #071c14;
+        font-weight: bold;
+        padding: 12px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #74c69d;
+    }
+
+    .advies {
+        padding: 25px;
+        border-radius: 18px;
+        margin-bottom: 22px;
+        background: #183c2e;
+        border: 1px solid #2d6a4f;
+    }
+
+    .advies h2 {
+        margin-top: 0;
+    }
+
+    .score {
+        display: inline-block;
+        font-size: 17px;
+        font-weight: bold;
+        padding: 8px 13px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .goed {
+        background: #2d6a4f;
+    }
+
+    .matig {
+        background: #bc6c25;
+    }
+
+    .slecht {
+        background: #9d0208;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 15px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .card .label {
+        color: #b7d7c5;
+        font-size: 14px;
+    }
+
+    .card .value {
+        font-size: 29px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .section {
+        margin-top: 30px;
+    }
+
+    .hours {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+        gap: 10px;
+    }
+
+    .hour {
+        background: rgba(255,255,255,0.07);
+        padding: 15px;
+        border-radius: 13px;
+        text-align: center;
+    }
+
+    .hour strong {
+        font-size: 18px;
+    }
+
+    .rain {
+        color: #90e0ef;
+    }
+
+    #status {
+        margin-top: 22px;
+        color: #a8cfba;
+        font-size: 13px;
+    }
+
+    .error {
+        background: #7f1d1d;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    @media(max-width: 600px) {
+        header {
+            display: block;
+        }
+
+        button {
+            margin-top: 18px;
+        }
+
+        h1 {
+            font-size: 27px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div>
+        <h1>⚽ Voetbalweer</h1>
+        <div class="subtitle">
+            Berkel en Rodenrijs • weercheck voor vanavond
+        </div>
+    </div>
+
+    <button onclick="haalWeerOp()">🔄 Vernieuwen</button>
+</header>
+
+
+<div class="advies">
+    <div id="score" class="score">Weer beoordelen...</div>
+
+    <h2 id="adviesTitel">
+        Even geduld...
+    </h2>
+
+    <div id="adviesTekst">
+        De actuele weersverwachting wordt opgehaald.
+    </div>
+</div>
+
+
+<div class="cards">
+
+    <div class="card">
+        <div class="label">🌡 Temperatuur</div>
+        <div class="value" id="temperatuur">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">🥶 Gevoelstemperatuur</div>
+        <div class="value" id="gevoel">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">🌧 Neerslagkans</div>
+        <div class="value" id="regenKans">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">🌧 Neerslag</div>
+        <div class="value" id="regen">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">💨 Windsnelheid</div>
+        <div class="value" id="wind">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">🌬 Windstoten</div>
+        <div class="value" id="windstoot">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">💧 Luchtvochtigheid</div>
+        <div class="value" id="vochtigheid">--</div>
+    </div>
+
+    <div class="card">
+        <div class="label">☁️ Bewolking</div>
+        <div class="value" id="bewolking">--</div>
+    </div>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Vanmiddag en vanavond</h2>
+
+    <div id="uren" class="hours">
+        Data laden...
+    </div>
+
+</div>
+
+
+<div id="status">
+    Verbinding maken met weer-API...
+</div>
+
+</div>
+
+
+<script>
+
+/*
+    BERKEL EN RODENRIJS
+    Benaderde coördinaten
+*/
+const latitude = 51.99;
+const longitude = 4.48;
+
+
+/*
+    HOOFDFUNCTIE
+*/
+async function haalWeerOp() {
+
+    const status = document.getElementById("status");
+
+    status.innerText = "Nieuwe weergegevens ophalen...";
+
+    const url =
+    `https://api.open-meteo.com/v1/forecast` +
+    `?latitude=${latitude}` +
+    `&longitude=${longitude}` +
+    `&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_gusts_10m` +
+    `&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover` +
+    `&forecast_days=1` +
+    `&timezone=Europe%2FAmsterdam`;
+
+    try {
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("API geeft foutcode " + response.status);
+        }
+
+        const data = await response.json();
+
+        console.log("Weerdata:", data);
+
+        vulActueelWeer(data);
+
+        vulUurVerwachting(data);
+
+        maakVoetbalAdvies(data);
+
+        const nu = new Date();
+
+        status.innerText =
+            "Laatste update: " +
+            nu.toLocaleTimeString("nl-NL") +
+            " • automatisch iedere 5 minuten bijgewerkt";
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        status.innerHTML =
+            `<div class="error">
+                Het ophalen van weerdata is mislukt.
+                Controleer je internetverbinding en probeer opnieuw.
+            </div>`;
+    }
+}
+
+
+/*
+    ACTUELE WEERDATA OP SCHERM ZETTEN
+*/
+function vulActueelWeer(data) {
+
+    document.getElementById("temperatuur").innerText =
+        afronden(data.current.temperature_2m) + " °C";
+
+    document.getElementById("gevoel").innerText =
+        afronden(data.current.apparent_temperature) + " °C";
+
+    document.getElementById("regen").innerText =
+        afronden(data.current.precipitation) + " mm";
+
+    document.getElementById("wind").innerText =
+        afronden(data.current.wind_speed_10m) + " km/u";
+
+    document.getElementById("windstoot").innerText =
+        afronden(data.current.wind_gusts_10m) + " km/u";
+
+    document.getElementById("vochtigheid").innerText =
+        data.current.relative_humidity_2m + " %";
+
+    document.getElementById("bewolking").innerText =
+        data.current.cloud_cover + " %";
+}
+
+
+/*
+    UURVERWACHTING MAKEN
+*/
+function vulUurVerwachting(data) {
+
+    const container = document.getElementById("uren");
+
+    container.innerHTML = "";
+
+    const huidigeUur = new Date().getHours();
+
+    let dichtstbij = huidigeUur;
+
+    for (let i = 0; i < data.hourly.time.length; i++) {
+
+        const datum = new Date(data.hourly.time[i]);
+
+        const uur = datum.getHours();
+
+        /*
+            Alleen de uren vanaf nu tot middernacht tonen.
+        */
+        if (uur >= huidigeUur) {
+
+            const kans =
+                data.hourly.precipitation_probability[i];
+
+            const temperatuur =
+                data.hourly.temperature_2m[i];
+
+            const wind =
+                data.hourly.wind_speed_10m[i];
+
+            const regen =
+                data.hourly.precipitation[i];
+
+            const html = `
+
+                <div class="hour">
+
+                    <strong>
+                        ${String(uur).padStart(2, "0")}:00
+                    </strong>
+
+                    <p>
+                        🌡 ${afronden(temperatuur)} °C
+                    </p>
+
+                    <p class="rain">
+                        🌧 ${kans ?? 0}%
+                    </p>
+
+                    <p>
+                        ${afronden(regen)} mm
+                    </p>
+
+                    <p>
+                        💨 ${afronden(wind)} km/u
+                    </p>
+
+                </div>
+            `;
+
+            container.innerHTML += html;
+        }
+    }
+
+
+    /*
+        Regenkans van het huidige uur
+    */
+    const index = data.hourly.time.findIndex(t => {
+
+        const datum = new Date(t);
+
+        return datum.getHours() === dichtstbij;
+    });
+
+    if (index !== -1) {
+
+        document.getElementById("regenKans").innerText =
+            data.hourly.precipitation_probability[index] + " %";
+    }
+}
+
+
+/*
+    VOETBALADVIES
+
+    Dit is GEEN onderdeel van de API.
+
+    We maken hier zelf simpele regels waarmee
+    het dashboard de weersverwachting beoordeelt.
+*/
+function maakVoetbalAdvies(data) {
+
+    /*
+        We kijken vooral naar de uren 18:00 t/m 22:00.
+    */
+
+    let regenKansen = [];
+    let windstoten = [];
+    let temperaturen = [];
+    let neerslag = [];
+
+    for (let i = 0; i < data.hourly.time.length; i++) {
+
+        const datum = new Date(data.hourly.time[i]);
+
+        const uur = datum.getHours();
+
+        if (uur >= 18 && uur <= 22) {
+
+            regenKansen.push(
+                data.hourly.precipitation_probability[i] ?? 0
+            );
+
+            windstoten.push(
+                data.hourly.wind_gusts_10m[i] ?? 0
+            );
+
+            temperaturen.push(
+                data.hourly.apparent_temperature[i] ?? 15
+            );
+
+            neerslag.push(
+                data.hourly.precipitation[i] ?? 0
+            );
+        }
+    }
+
+
+    const maxRegen =
+        Math.max(...regenKansen);
+
+    const maxWind =
+        Math.max(...windstoten);
+
+    const minTemp =
+        Math.min(...temperaturen);
+
+    const totaalRegen =
+        neerslag.reduce((a,b) => a + b, 0);
+
+
+    /*
+        Zelfgemaakte voetbalscore
+    */
+    let score = 100;
+
+    if (maxRegen >= 70) score -= 35;
+    else if (maxRegen >= 40) score -= 20;
+    else if (maxRegen >= 20) score -= 8;
+
+    if (totaalRegen >= 4) score -= 30;
+    else if (totaalRegen >= 1) score -= 15;
+
+    if (maxWind >= 60) score -= 30;
+    else if (maxWind >= 40) score -= 15;
+
+    if (minTemp <= 5) score -= 15;
+    else if (minTemp <= 10) score -= 7;
+
+    score = Math.max(0, score);
+
+
+    const scoreElement =
+        document.getElementById("score");
+
+    const titel =
+        document.getElementById("adviesTitel");
+
+    const tekst =
+        document.getElementById("adviesTekst");
+
+
+    scoreElement.innerText =
+        "Voetbalweer-score: " + score + "/100";
+
+
+    scoreElement.classList.remove(
+        "goed",
+        "matig",
+        "slecht"
+    );
+
+
+    /*
+        Dashboardoordeel
+    */
+    if (score >= 75) {
+
+        scoreElement.classList.add("goed");
+
+        titel.innerText =
+            "🟢 Prima voetbalweer";
+
+        tekst.innerText =
+            "Op basis van neerslag, wind en temperatuur lijken de omstandigheden vanavond prima om te voetballen.";
+    }
+
+    else if (score >= 50) {
+
+        scoreElement.classList.add("matig");
+
+        titel.innerText =
+            "🟠 Redelijk voetbalweer";
+
+        tekst.innerText =
+            "Voetballen kan waarschijnlijk prima, maar houd rekening met regen, wind of lagere temperaturen.";
+    }
+
+    else {
+
+        scoreElement.classList.add("slecht");
+
+        titel.innerText =
+            "🔴 Matig tot slecht voetbalweer";
+
+        tekst.innerText =
+            "De weersomstandigheden zijn vanavond minder gunstig. Bekijk vooral de regen- en windverwachting per uur.";
+    }
+}
+
+
+/*
+    Hulpfunctie
+*/
+function afronden(getal) {
+
+    if (getal === null || getal === undefined) {
+        return "--";
+    }
+
+    return Math.round(getal * 10) / 10;
+}
+
+
+/*
+    DIRECT STARTEN
+*/
+haalWeerOp();
+
+
+/*
+    Iedere vijf minuten nieuwe data ophalen
+*/
+setInterval(
+    haalWeerOp,
+    5 * 60 * 1000
+);
+
+</script>
+
+</body>
+</html>
