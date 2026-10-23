@@ -2,165 +2,417 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Voetbalweer">
 <title>Voetbalweer Berkel en Rodenrijs</title>
 
 <style>
+    /*
+        KLEUREN
+        iOS-systeemkleuren volgens de Apple Human Interface Guidelines,
+        met aparte waarden voor light en dark mode.
+    */
+    :root {
+        --bg: #F2F2F7;
+        --card: #FFFFFF;
+        --card-raised: #F2F2F7;
+        --label: #000000;
+        --label-2: rgba(60, 60, 67, 0.6);
+        --label-3: rgba(60, 60, 67, 0.3);
+        --separator: rgba(60, 60, 67, 0.18);
+        --fill: rgba(120, 120, 128, 0.12);
+
+        --green: #34C759;
+        --orange: #FF9500;
+        --red: #FF3B30;
+        --blue: #007AFF;
+        --teal: #30B0C7;
+
+        --radius: 22px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #000000;
+            --card: #1C1C1E;
+            --card-raised: #2C2C2E;
+            --label: #FFFFFF;
+            --label-2: rgba(235, 235, 245, 0.6);
+            --label-3: rgba(235, 235, 245, 0.3);
+            --separator: rgba(84, 84, 88, 0.6);
+            --fill: rgba(120, 120, 128, 0.24);
+
+            --green: #30D158;
+            --orange: #FF9F0A;
+            --red: #FF453A;
+            --blue: #0A84FF;
+            --teal: #40C8E0;
+        }
+    }
+
     * {
         box-sizing: border-box;
     }
 
     body {
         margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(135deg, #081c15, #1b4332);
-        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--label);
         min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        font-variant-numeric: tabular-nums;
     }
 
     .container {
-        max-width: 1150px;
+        max-width: 980px;
         margin: auto;
-        padding: 35px 20px;
+        padding: max(20px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom));
     }
 
+    /*
+        NAVIGATIEBALK MET GROTE TITEL
+    */
     header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 25px;
+        align-items: flex-end;
+        gap: 16px;
+        padding: 12px 4px 20px;
+    }
+
+    .eyebrow {
+        color: var(--label-2);
+        font-size: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
     }
 
     h1 {
-        margin: 0;
+        margin: 2px 0 0;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
     }
 
-    .subtitle {
-        color: #b7d7c5;
-        margin-top: 7px;
-    }
-
-    button {
+    .vernieuw {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         border: none;
-        background: #52b788;
-        color: #071c14;
-        font-weight: bold;
-        padding: 12px 18px;
-        border-radius: 10px;
+        background: var(--fill);
+        color: var(--blue);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 999px;
         cursor: pointer;
+        transition: opacity 0.2s;
     }
 
-    button:hover {
-        background: #74c69d;
+    .vernieuw:active {
+        opacity: 0.5;
     }
 
-    .advies {
-        padding: 25px;
-        border-radius: 18px;
-        margin-bottom: 22px;
-        background: #183c2e;
-        border: 1px solid #2d6a4f;
+    .vernieuw svg {
+        width: 15px;
+        height: 15px;
     }
 
-    .advies h2 {
-        margin-top: 0;
+    .vernieuw.bezig svg {
+        animation: draai 0.8s linear infinite;
     }
 
-    .score {
-        display: inline-block;
-        font-size: 17px;
-        font-weight: bold;
-        padding: 8px 13px;
-        border-radius: 8px;
-        margin-bottom: 10px;
+    @keyframes draai {
+        to { transform: rotate(360deg); }
     }
 
-    .goed {
-        background: #2d6a4f;
-    }
-
-    .matig {
-        background: #bc6c25;
-    }
-
-    .slecht {
-        background: #9d0208;
-    }
-
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-        gap: 15px;
+    /*
+        GROEPEN EN KAARTEN
+    */
+    .group-title {
+        margin: 28px 4px 8px;
+        color: var(--label-2);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
     }
 
     .card {
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.09);
-        border-radius: 16px;
-        padding: 20px;
+        background: var(--card);
+        border-radius: var(--radius);
     }
 
-    .card .label {
-        color: #b7d7c5;
-        font-size: 14px;
+    /*
+        VOETBALADVIES
+    */
+    .advies {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 22px;
     }
 
-    .card .value {
-        font-size: 29px;
-        font-weight: bold;
-        margin-top: 10px;
+    .ring {
+        position: relative;
+        width: 108px;
+        height: 108px;
+        flex-shrink: 0;
     }
 
-    .section {
-        margin-top: 30px;
+    .ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
     }
 
-    .hours {
+    .ring .spoor {
+        stroke: var(--fill);
+    }
+
+    .ring .voortgang {
+        stroke: var(--label-3);
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.3s;
+    }
+
+    .ring .getal {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ring .getal strong {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .ring .getal span {
+        color: var(--label-2);
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+    .badge {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--fill);
+        color: var(--label-2);
+    }
+
+    .goed .voortgang { stroke: var(--green); }
+    .matig .voortgang { stroke: var(--orange); }
+    .slecht .voortgang { stroke: var(--red); }
+
+    .goed .badge { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); }
+    .matig .badge { background: color-mix(in srgb, var(--orange) 18%, transparent); color: var(--orange); }
+    .slecht .badge { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--red); }
+
+    .advies h2 {
+        margin: 8px 0 4px;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .advies p {
+        margin: 0;
+        color: var(--label-2);
+        font-size: 15px;
+        line-height: 1.4;
+    }
+
+    /*
+        WEERWAARDEN
+    */
+    .cards {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
     }
 
-    .hour {
-        background: rgba(255,255,255,0.07);
-        padding: 15px;
-        border-radius: 13px;
-        text-align: center;
+    .tegel {
+        padding: 14px 16px 16px;
     }
 
-    .hour strong {
-        font-size: 18px;
+    .tegel .label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--label-2);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
     }
 
-    .rain {
-        color: #90e0ef;
+    .tegel .value {
+        margin-top: 10px;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
-    #status {
-        margin-top: 22px;
-        color: #a8cfba;
+    .tegel .value small {
+        color: var(--label-2);
+        font-size: 17px;
+        font-weight: 500;
+        margin-left: 2px;
+    }
+
+    /*
+        UURVERWACHTING (HORIZONTAAL SCROLLEN)
+    */
+    .uren-kaart {
+        padding: 14px 0 6px;
+    }
+
+    .uren-kop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 12px;
+        margin: 0 16px;
+        border-bottom: 0.5px solid var(--separator);
+        color: var(--label-2);
         font-size: 13px;
     }
 
-    .error {
-        background: #7f1d1d;
-        padding: 15px;
-        border-radius: 10px;
+    .legenda {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    @media(max-width: 600px) {
-        header {
-            display: block;
-        }
+    .legenda::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        background: color-mix(in srgb, var(--green) 30%, transparent);
+    }
 
-        button {
-            margin-top: 18px;
-        }
+    .hours {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        padding: 10px 12px 12px;
+        scrollbar-width: none;
+    }
 
+    .hours::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hour {
+        flex: 0 0 auto;
+        min-width: 62px;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 6px;
+        border-radius: 14px;
+        font-size: 15px;
+    }
+
+    .hour.speeltijd {
+        background: color-mix(in srgb, var(--green) 14%, transparent);
+    }
+
+    .hour .tijd {
+        color: var(--label-2);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .hour.nu .tijd {
+        color: var(--label);
+    }
+
+    .hour .icoon {
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    .hour .temp {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .hour .rain {
+        color: var(--teal);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .hour .klein {
+        color: var(--label-2);
+        font-size: 12px;
+    }
+
+    .laden {
+        padding: 18px 16px;
+        color: var(--label-2);
+    }
+
+    /*
+        STATUSREGEL
+    */
+    #status {
+        margin-top: 22px;
+        text-align: center;
+        color: var(--label-2);
+        font-size: 12px;
+    }
+
+    .error {
+        display: inline-block;
+        background: color-mix(in srgb, var(--red) 15%, transparent);
+        color: var(--red);
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 14px;
+    }
+
+    @media (max-width: 720px) {
+        .cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
         h1 {
-            font-size: 27px;
+            font-size: 30px;
+        }
+
+        .advies {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .tegel .value {
+            font-size: 24px;
         }
     }
 </style>
@@ -172,67 +424,89 @@
 
 <header>
     <div>
+        <div class="eyebrow">Berkel en Rodenrijs</div>
         <h1>⚽ Voetbalweer</h1>
-        <div class="subtitle">
-            Berkel en Rodenrijs • weercheck voor vanavond
-        </div>
     </div>
 
-    <button onclick="haalWeerOp()">🔄 Vernieuwen</button>
+    <button id="vernieuwKnop" class="vernieuw" onclick="haalWeerOp()" aria-label="Weer vernieuwen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+            <path d="M21 3v6h-6"/>
+        </svg>
+        Vernieuw
+    </button>
 </header>
 
 
-<div class="advies">
-    <div id="score" class="score">Weer beoordelen...</div>
+<div id="advies" class="card advies">
 
-    <h2 id="adviesTitel">
-        Even geduld...
-    </h2>
-
-    <div id="adviesTekst">
-        De actuele weersverwachting wordt opgehaald.
+    <div class="ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="spoor" cx="50" cy="50" r="44" fill="none" stroke-width="10"/>
+            <circle id="ringVoortgang" class="voortgang" cx="50" cy="50" r="44" fill="none" stroke-width="10"
+                    pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        </svg>
+        <div class="getal">
+            <strong id="score">--</strong>
+            <span>van 100</span>
+        </div>
     </div>
+
+    <div>
+        <span id="badge" class="badge">Vanavond 18:00 – 22:00</span>
+
+        <h2 id="adviesTitel">
+            Even geduld...
+        </h2>
+
+        <p id="adviesTekst">
+            De actuele weersverwachting wordt opgehaald.
+        </p>
+    </div>
+
 </div>
 
 
+<div class="group-title">Nu</div>
+
 <div class="cards">
 
-    <div class="card">
+    <div class="card tegel">
         <div class="label">🌡 Temperatuur</div>
         <div class="value" id="temperatuur">--</div>
     </div>
 
-    <div class="card">
-        <div class="label">🥶 Gevoelstemperatuur</div>
+    <div class="card tegel">
+        <div class="label">🥶 Voelt als</div>
         <div class="value" id="gevoel">--</div>
     </div>
 
-    <div class="card">
-        <div class="label">🌧 Neerslagkans</div>
+    <div class="card tegel">
+        <div class="label">☂️ Regenkans</div>
         <div class="value" id="regenKans">--</div>
     </div>
 
-    <div class="card">
+    <div class="card tegel">
         <div class="label">🌧 Neerslag</div>
         <div class="value" id="regen">--</div>
     </div>
 
-    <div class="card">
-        <div class="label">💨 Windsnelheid</div>
+    <div class="card tegel">
+        <div class="label">💨 Wind</div>
         <div class="value" id="wind">--</div>
     </div>
 
-    <div class="card">
+    <div class="card tegel">
         <div class="label">🌬 Windstoten</div>
         <div class="value" id="windstoot">--</div>
     </div>
 
-    <div class="card">
-        <div class="label">💧 Luchtvochtigheid</div>
+    <div class="card tegel">
+        <div class="label">💧 Vochtigheid</div>
         <div class="value" id="vochtigheid">--</div>
     </div>
 
-    <div class="card">
+    <div class="card tegel">
         <div class="label">☁️ Bewolking</div>
         <div class="value" id="bewolking">--</div>
     </div>
@@ -240,12 +514,17 @@
 </div>
 
 
-<div class="section">
+<div class="group-title">Vanmiddag en vanavond</div>
 
-    <h2>Vanmiddag en vanavond</h2>
+<div class="card uren-kaart">
+
+    <div class="uren-kop">
+        <span>Verwachting per uur</span>
+        <span class="legenda">Speeltijd</span>
+    </div>
 
     <div id="uren" class="hours">
-        Data laden...
+        <div class="laden">Data laden...</div>
     </div>
 
 </div>
@@ -274,15 +553,17 @@ const longitude = 4.48;
 async function haalWeerOp() {
 
     const status = document.getElementById("status");
+    const knop = document.getElementById("vernieuwKnop");
 
     status.innerText = "Nieuwe weergegevens ophalen...";
+    knop.classList.add("bezig");
 
     const url =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=${latitude}` +
     `&longitude=${longitude}` +
     `&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,cloud_cover,wind_speed_10m,wind_gusts_10m` +
-    `&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover` +
+    `&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover,is_day` +
     `&forecast_days=1` +
     `&timezone=Europe%2FAmsterdam`;
 
@@ -307,9 +588,9 @@ async function haalWeerOp() {
         const nu = new Date();
 
         status.innerText =
-            "Laatste update: " +
-            nu.toLocaleTimeString("nl-NL") +
-            " • automatisch iedere 5 minuten bijgewerkt";
+            "Bijgewerkt om " +
+            nu.toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" }) +
+            " • automatisch iedere 5 minuten";
 
     }
 
@@ -323,6 +604,11 @@ async function haalWeerOp() {
                 Controleer je internetverbinding en probeer opnieuw.
             </div>`;
     }
+
+    finally {
+
+        knop.classList.remove("bezig");
+    }
 }
 
 
@@ -331,26 +617,19 @@ async function haalWeerOp() {
 */
 function vulActueelWeer(data) {
 
-    document.getElementById("temperatuur").innerText =
-        afronden(data.current.temperature_2m) + " °C";
+    zetWaarde("temperatuur", afronden(data.current.temperature_2m), "°");
 
-    document.getElementById("gevoel").innerText =
-        afronden(data.current.apparent_temperature) + " °C";
+    zetWaarde("gevoel", afronden(data.current.apparent_temperature), "°");
 
-    document.getElementById("regen").innerText =
-        afronden(data.current.precipitation) + " mm";
+    zetWaarde("regen", afronden(data.current.precipitation), "mm");
 
-    document.getElementById("wind").innerText =
-        afronden(data.current.wind_speed_10m) + " km/u";
+    zetWaarde("wind", Math.round(data.current.wind_speed_10m), "km/u");
 
-    document.getElementById("windstoot").innerText =
-        afronden(data.current.wind_gusts_10m) + " km/u";
+    zetWaarde("windstoot", Math.round(data.current.wind_gusts_10m), "km/u");
 
-    document.getElementById("vochtigheid").innerText =
-        data.current.relative_humidity_2m + " %";
+    zetWaarde("vochtigheid", data.current.relative_humidity_2m, "%");
 
-    document.getElementById("bewolking").innerText =
-        data.current.cloud_cover + " %";
+    zetWaarde("bewolking", data.current.cloud_cover, "%");
 }
 
 
@@ -364,8 +643,6 @@ function vulUurVerwachting(data) {
     container.innerHTML = "";
 
     const huidigeUur = new Date().getHours();
-
-    let dichtstbij = huidigeUur;
 
     for (let i = 0; i < data.hourly.time.length; i++) {
 
@@ -390,29 +667,44 @@ function vulUurVerwachting(data) {
             const regen =
                 data.hourly.precipitation[i];
 
+            const bewolking =
+                data.hourly.cloud_cover[i];
+
+            const isDag =
+                data.hourly.is_day[i] === 1;
+
+            const klassen = ["hour"];
+
+            if (uur === huidigeUur) klassen.push("nu");
+            if (uur >= 18 && uur <= 22) klassen.push("speeltijd");
+
             const html = `
 
-                <div class="hour">
+                <div class="${klassen.join(" ")}">
 
-                    <strong>
-                        ${String(uur).padStart(2, "0")}:00
-                    </strong>
+                    <span class="tijd">
+                        ${uur === huidigeUur ? "Nu" : String(uur).padStart(2, "0")}
+                    </span>
 
-                    <p>
-                        🌡 ${afronden(temperatuur)} °C
-                    </p>
+                    <span class="icoon">
+                        ${weerIcoon(isDag, bewolking, regen)}
+                    </span>
 
-                    <p class="rain">
-                        🌧 ${kans ?? 0}%
-                    </p>
+                    <span class="temp">
+                        ${Math.round(temperatuur)}°
+                    </span>
 
-                    <p>
+                    <span class="rain">
+                        ${kans ?? 0}%
+                    </span>
+
+                    <span class="klein">
                         ${afronden(regen)} mm
-                    </p>
+                    </span>
 
-                    <p>
-                        💨 ${afronden(wind)} km/u
-                    </p>
+                    <span class="klein">
+                        ${Math.round(wind)} km/u
+                    </span>
 
                 </div>
             `;
@@ -429,13 +721,12 @@ function vulUurVerwachting(data) {
 
         const datum = new Date(t);
 
-        return datum.getHours() === dichtstbij;
+        return datum.getHours() === huidigeUur;
     });
 
     if (index !== -1) {
 
-        document.getElementById("regenKans").innerText =
-            data.hourly.precipitation_probability[index] + " %";
+        zetWaarde("regenKans", data.hourly.precipitation_probability[index], "%");
     }
 }
 
@@ -520,8 +811,8 @@ function maakVoetbalAdvies(data) {
     score = Math.max(0, score);
 
 
-    const scoreElement =
-        document.getElementById("score");
+    const kaart =
+        document.getElementById("advies");
 
     const titel =
         document.getElementById("adviesTitel");
@@ -529,12 +820,17 @@ function maakVoetbalAdvies(data) {
     const tekst =
         document.getElementById("adviesTekst");
 
+    const badge =
+        document.getElementById("badge");
 
-    scoreElement.innerText =
-        "Voetbalweer-score: " + score + "/100";
+
+    document.getElementById("score").innerText = score;
+
+    document.getElementById("ringVoortgang")
+        .setAttribute("stroke-dashoffset", 100 - score);
 
 
-    scoreElement.classList.remove(
+    kaart.classList.remove(
         "goed",
         "matig",
         "slecht"
@@ -546,10 +842,12 @@ function maakVoetbalAdvies(data) {
     */
     if (score >= 75) {
 
-        scoreElement.classList.add("goed");
+        kaart.classList.add("goed");
+
+        badge.innerText = "Goed";
 
         titel.innerText =
-            "🟢 Prima voetbalweer";
+            "Prima voetbalweer";
 
         tekst.innerText =
             "Op basis van neerslag, wind en temperatuur lijken de omstandigheden vanavond prima om te voetballen.";
@@ -557,10 +855,12 @@ function maakVoetbalAdvies(data) {
 
     else if (score >= 50) {
 
-        scoreElement.classList.add("matig");
+        kaart.classList.add("matig");
+
+        badge.innerText = "Redelijk";
 
         titel.innerText =
-            "🟠 Redelijk voetbalweer";
+            "Redelijk voetbalweer";
 
         tekst.innerText =
             "Voetballen kan waarschijnlijk prima, maar houd rekening met regen, wind of lagere temperaturen.";
@@ -568,10 +868,12 @@ function maakVoetbalAdvies(data) {
 
     else {
 
-        scoreElement.classList.add("slecht");
+        kaart.classList.add("slecht");
+
+        badge.innerText = "Minder gunstig";
 
         titel.innerText =
-            "🔴 Matig tot slecht voetbalweer";
+            "Matig tot slecht voetbalweer";
 
         tekst.innerText =
             "De weersomstandigheden zijn vanavond minder gunstig. Bekijk vooral de regen- en windverwachting per uur.";
@@ -580,7 +882,7 @@ function maakVoetbalAdvies(data) {
 
 
 /*
-    Hulpfunctie
+    Hulpfuncties
 */
 function afronden(getal) {
 
@@ -589,6 +891,28 @@ function afronden(getal) {
     }
 
     return Math.round(getal * 10) / 10;
+}
+
+function zetWaarde(id, waarde, eenheid) {
+
+    const element = document.getElementById(id);
+
+    if (waarde === null || waarde === undefined || Number.isNaN(waarde) || waarde === "--") {
+        element.innerText = "--";
+        return;
+    }
+
+    element.innerHTML = `${waarde}<small>${eenheid}</small>`;
+}
+
+function weerIcoon(isDag, bewolking, regen) {
+
+    if (regen >= 2) return "🌧️";
+    if (regen > 0) return "🌦️";
+    if (bewolking >= 80) return "☁️";
+    if (bewolking >= 40) return isDag ? "⛅" : "☁️";
+
+    return isDag ? "☀️" : "🌙";
 }
 
 
